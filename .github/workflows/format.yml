@@ -23,8 +23,8 @@ jobs:
           clang-format --style=Google "${FILE}" > formatted_file
           
           # Compare the original file and the formatted output
-          if ! cmp -s "${file}" formatted_file; then
-            echo "::error file=$file::File is not formatted correctly."
+          if ! cmp -s "${FILE}" formatted_file; then
+            echo "::error ${FILE} is not formatted correctly."
             exit 1
           fi
         done
@@ -33,8 +33,8 @@ jobs:
           clang-format --style=Google "${FILE}" > formatted_file
           
           # Compare the original file and the formatted output
-          if ! cmp -s "${file}" formatted_file; then
-            echo "::error file=$file::File is not formatted correctly."
+          if ! cmp -s "${FILE}" formatted_file; then
+            echo "::error ${FILE} is not formatted correctly."
             exit 1
           fi
         done
