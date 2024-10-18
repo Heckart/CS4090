@@ -18,16 +18,26 @@ jobs:
     # Step 3: Run clang-format in check mode
     - name: Run clang-format
       run: |
-        # Find all C++ source and header files
-        FILES=$(find . -name '*.cpp' -o -name '*.h')
-        
-        # Run clang-format on each file and check if it needs formatting
-        for file in $FILES; do
-          clang-format --style=Google $file > formatted_file
-          
-          # Compare the original file and the formatted output
-          if ! cmp -s $file formatted_file; then
-            echo "::error file=$file::File is not formatted correctly."
-            exit 1
+      for FILE in **/*.cpp; do
+      	  TEMP_FILE=$(mktemp)
+
+    	  clang-format --style=Google "$FILE" > "$TEMP_FILE"
+
+    	  if ! diff -q "$FILE" "$TEMP_FILE" >/dev/null 2>&1; then
+	  exit 1 
           fi
-        done
+
+          rm "$TEMP_FILE"
+      done
+
+      for FILE in **/*.h; do
+      	  TEMP_FILE=$(mktemp)
+
+      	  clang-format --style=Google "$FILE" > "$TEMP_FILE"
+
+    	  if ! diff -q "$FILE" "$TEMP_FILE" >/dev/null 2>&1; then
+	  exit 1
+          fi
+
+    	  rm "$TEMP_FILE"
+      done
