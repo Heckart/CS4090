@@ -1,0 +1,41 @@
+name: Clang Format Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.cpp'
+      - '**/*.h'
+  push:
+    paths:
+      - '**/*.cpp'
+      - '**/*.h'
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Install clang-format
+    - name: Install clang-format
+      run: sudo apt-get install -y clang-format
+
+    # Step 3: Run clang-format in check mode
+    - name: Run clang-format
+      run: |
+        # Find all C++ source and header files
+        FILES=$(find . -name '*.cpp' -o -name '*.h')
+        
+        # Run clang-format on each file and check if it needs formatting
+        for file in $FILES; do
+          clang-format --style=Google $file > formatted_file
+          
+          # Compare the original file and the formatted output
+          if ! cmp -s $file formatted_file; then
+            echo "::error file=$file::File is not formatted correctly."
+            exit 1
+          fi
+        done
