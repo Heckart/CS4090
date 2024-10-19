@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 
-
+//
 class delivery_info(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -21,7 +21,9 @@ class delivery_info(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         const val COLUMN_ZIP = "zip"
     }
 
+    //called when database is created
     override fun onCreate(db: SQLiteDatabase?) {
+        // Create table SQL query
         val CREATE_TABLE = ("CREATE TABLE $TABLE_NAME ("
                 + "$COLUMN_ADDRESS TEXT,"
                 + "$COLUMN_CITY TEXT,"
@@ -45,37 +47,6 @@ class delivery_info(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
             put(COLUMN_ZIP, zip)
         }
         db.insert(TABLE_NAME, null, values)
-        db.close()
-        getAllDeliveryInfo()
-    }
-
-    // Method to retrieve and print all delivery information
-    fun getAllDeliveryInfo() {
-        val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME", null)
-
-        if (cursor.moveToFirst()) {
-            do {
-                val addressIndex = cursor.getColumnIndex(COLUMN_ADDRESS)
-                val cityIndex= cursor.getColumnIndex(COLUMN_CITY)
-                val stateIndex = cursor.getColumnIndex(COLUMN_STATE)
-                val zipIndex = cursor.getColumnIndex(COLUMN_ZIP)
-
-                if (addressIndex >= 0 && cityIndex >= 0 && stateIndex >= 0 && zipIndex >= 0) {
-                    val address = cursor.getString(addressIndex)
-                    val city = cursor.getString(cityIndex)
-                    val state = cursor.getString(stateIndex)
-                    val zip = cursor.getString(zipIndex)
-
-                    // Print the delivery information
-                    println("Address: $address, City: $city, State: $state, Zip: $zip")
-                }
-                else{
-                    println("ERROR one or more indices are invalid")
-                }
-                } while (cursor.moveToNext())
-        }
-        cursor.close()
         db.close()
     }
 }
