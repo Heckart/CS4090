@@ -5,7 +5,7 @@
 
 int main() {
   web::http::experimental::listener::http_listener listener(
-      U("http://0.0.0.0:0000/api"));  // TODO: get the right address
+      U("http://0.0.0.0:0000/api")); // TODO: get the right address
 
   listener.support(web::http::methods::POST, handle_post);
 
@@ -17,7 +17,8 @@ int main() {
         })
         .wait();
 
-    while (true);
+    while (true)
+      ;
   } catch (const std::exception &e) {
     std::cerr << "Exception: " << e.what() << std::endl;
   }

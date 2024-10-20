@@ -20,7 +20,7 @@ jobs:
       run: |
         # Run clang-format on each file and check if it needs formatting
         for FILE in backend/src/*.cpp ; do
-          clang-format --style=Google "${FILE}" > formatted_file
+          clang-format --style=LLVM "${FILE}" > formatted_file
           
           # Compare the original file and the formatted output
           if ! cmp -s "${FILE}" formatted_file; then
@@ -31,7 +31,7 @@ jobs:
         done
 
         for FILE in backend/src/*.h ; do
-          clang-format --style=Google "${FILE}" > formatted_file
+          clang-format --style=LLVM "${FILE}" > formatted_file
           
           # Compare the original file and the formatted output
           if ! cmp -s "${FILE}" formatted_file; then
