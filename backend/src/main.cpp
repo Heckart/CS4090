@@ -5,7 +5,7 @@
 
 int main() {
   web::http::experimental::listener::http_listener listener(
-      U("http://0.0.0.0:8080")); // on the android frontend, while being
+      U("http://127.0.0.1:8080")); // on the android frontend, while being
                                  // emulated, 10.0.2.2 is an alias for the host
                                  // machine's localhost
 
