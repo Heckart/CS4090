@@ -1,7 +1,10 @@
 #include "api_backend.h"
 
+#include <cppconn/prepared_statement.h>
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
+#include <mysql_connection.h>
+#include <mysql_driver.h>
 
 #include <iostream>
 
@@ -52,6 +55,8 @@ void handle_post(web::http::http_request request) {
           request.reply(web::http::status_codes::OK, U("User info received."));
 
           // TODO: here the new data needs to be added to the database
+          insert_to_db(orderID, userID, addressPrimary, addressSecondary, city,
+                       state, zipCode, businessName, businessAddress, status);
 
         } catch (const std::exception &e) {
           request.reply(web::http::status_codes::BadRequest,
@@ -59,4 +64,55 @@ void handle_post(web::http::http_request request) {
         }
       })
       .wait();
+}
+
+void insert_to_db(const std::string &orderID, const std::string &userID,
+                  const std::string &addressPrimary,
+                  const std::string &addressSecondary, const std::string &city,
+                  const std::string &state, const std::string &zipCode,
+                  const std::string &businessName,
+                  const std::string &businessAddress,
+                  const std::string &status) {
+  try {
+    sql::mysql::MySQL_Driver *driver;
+    sql::Connection *conn;
+
+    // Connect to the database
+    driver = sql::mysql::get_mysql_driver_instance();
+    conn = driver->connect("tcp://localhost:3306", "username", "password");
+    conn->setSchema("api_database");
+
+    // Create a prepared statement to insert data
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
+        "INSERT INTO Orders (OrderID, UserID, Status) VALUES (?, ?, ?)"));
+
+    pstmt->setString(1, orderID); // Bind values
+    pstmt->setString(2, userID);
+    pstmt->setString(3, status);
+
+    pstmt->executeUpdate(); // Execute the insertion
+
+    std::cout << "Order data inserted successfully!" << std::endl;
+
+    std::unique_ptr<sql::PreparedStatement> pstmt2(
+        conn->prepareStatement("INSERT INTO location (city, state, address, "
+                               "zip_code) VALUES (?, ?, ?, ?)"));
+
+    pstmt2->setString(1, city); // Bind values
+    pstmt2->setString(2, state);
+    pstmt2->setString(3, addressPrimary);
+    pstmt2->setString(4, zipCode);
+
+    pstmt2->executeUpdate(); // Execute the insertion
+
+    std::cout << "location data inserted successfully!" << std::endl;
+
+    // TODO: addressSecondary, businessName, and businesAddress are unused.
+    // Further, we realy need to iron out how exactly we are going to
+    // appropriately handle the data we get from an order request.
+
+    delete conn; // Clean up connection
+  } catch (sql::SQLException &e) {
+    std::cerr << "SQL Exception: " << e.what() << std::endl;
+  }
 }

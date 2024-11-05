@@ -23,4 +23,21 @@ void handle_get(web::http::http_request request);
  */
 void handle_post(web::http::http_request request);
 
+/**
+ * @brief Handles inserting information from an order in to the proper DB
+ * tables.
+ *
+ * @param Includes all of the information taken from the handle_POST function.
+ *
+ * @return Nothing. Values are inserted into the DB and the result is logged to
+ * the console.
+ */
+void insert_to_db(const std::string &orderID, const std::string &userID,
+                  const std::string &addressPrimary,
+                  const std::string &addressSecondary, const std::string &city,
+                  const std::string &state, const std::string &zipCode,
+                  const std::string &businessName,
+                  const std::string &businessAddress,
+                  const std::string &status);
+
 #endif

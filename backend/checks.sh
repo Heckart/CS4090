@@ -67,7 +67,7 @@ else
 fi
 
 echo -e "${NC}Running scan-build static analysis..."
-scan-build g++ -g3  src/*.cpp -o api_backend -lcpprest -lboost_system -lssl -lcrypto -lpthread > scan-build_report.txt # report should include "No bugs found" if passed
+scan-build g++ -g3  src/*.cpp -o api_backend -lcpprest -lboost_system -lssl -lcrypto -lpthread -lmysqlcppconn > scan-build_report.txt # report should include "No bugs found" if passed
 if grep -Fq "No bugs found" scan-build_report.txt; then
     echo -e "${BGreen}scan-build static analysis passed."
     rm scan-build_report.txt
