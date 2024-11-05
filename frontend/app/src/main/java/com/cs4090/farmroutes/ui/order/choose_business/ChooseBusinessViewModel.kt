@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.cs4090.farmroutes.data.models.AddressInformation
 import com.cs4090.farmroutes.data.models.BusinessInformation
 import com.cs4090.farmroutes.data.models.USState
+import com.cs4090.farmroutes.data.repository.OrderRepository
 
 class ChooseBusinessViewModel : ViewModel() {
+    val order = OrderRepository.order
 
     // TODO - Eventually load this in from the DB
     private val _exampleStores = MutableLiveData<List<BusinessInformation>>(
@@ -44,7 +46,11 @@ class ChooseBusinessViewModel : ViewModel() {
         )
     )
 
+    // TODO - Eventually get _exampleStores from DB
     val availableBusinesses: LiveData<List<BusinessInformation>> = _exampleStores
-    // TODO - eventually get _exampleStores from DB
+
+    fun updateSelectedBusiness(selectedBusiness: BusinessInformation) {
+        OrderRepository.updateBusinessInformation(selectedBusiness)
+    }
 
 }

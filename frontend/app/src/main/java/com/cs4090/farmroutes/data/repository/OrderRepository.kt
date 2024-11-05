@@ -7,8 +7,8 @@ import com.cs4090.farmroutes.data.models.BusinessInformation
 import com.cs4090.farmroutes.data.models.Order
 import com.cs4090.farmroutes.data.models.OrderItem
 import com.cs4090.farmroutes.data.models.OrderStatus
+import com.cs4090.farmroutes.data.models.OrderTimeSlot
 import com.cs4090.farmroutes.data.models.UPC
-import kotlin.collections.mapOf
 
 object OrderRepository {
     private val _order = MutableLiveData<Order>(
@@ -18,7 +18,8 @@ object OrderRepository {
             deliveryAddress = null,
             businessInfo = null,
             status = OrderStatus.ORDERING,
-            items = mapOf<UPC, OrderItem>(),
+            items = mutableMapOf<UPC, OrderItem>(),
+            timeSlot = null,
         )
     )
     val order: LiveData<Order> get() = _order
@@ -35,19 +36,28 @@ object OrderRepository {
 
     fun addItem(item: OrderItem) {
         val currentItems = _order.value!!.items.toMutableMap()
-        currentItems[item.upc] = item
+
+        if (currentItems.containsKey(item.upc)) /* item is in cart, increment quantity */ {
+            val existingItem = currentItems[item.upc]!!
+            existingItem.quantity += 1
+            currentItems[item.upc] = existingItem
+        } else /* item not in cart, add one of item to cart */ {
+            currentItems[item.upc] = item.copy(quantity = 1)
+        }
         _order.value = _order.value!!.copy(items = currentItems)
     }
 
-    fun removeItem(upc: UPC) {
+    fun removeItem(item: OrderItem) {
         val currentItems = _order.value!!.items.toMutableMap()
-        currentItems.remove(upc)
-        _order.value = _order.value!!.copy(items = currentItems)
-    }
-
-    fun updateItem(item: OrderItem) {
-        val currentItems = _order.value!!.items.toMutableMap()
-        currentItems[item.upc] = item
+        if (currentItems.containsKey(item.upc)) {
+            val existingItem = currentItems[item.upc]!!
+            if (existingItem.quantity > 1) /* item count is greater than one, remove one item */ {
+                existingItem.quantity -= 1
+                currentItems[item.upc] = existingItem
+            } else /* item count is one, remove from cart */ {
+                currentItems.remove(item.upc)
+            }
+        }
         _order.value = _order.value!!.copy(items = currentItems)
     }
 
@@ -57,5 +67,13 @@ object OrderRepository {
 
     fun updateStatus(status: OrderStatus) {
         _order.value = _order.value!!.copy(status = status)
+    }
+
+    fun updateTimeSlot(timeSlot: OrderTimeSlot) {
+        _order.value = _order.value!!.copy(timeSlot = timeSlot)
+    }
+
+    fun removeTimeSlot(timeSlot: OrderTimeSlot) {
+        _order.value = _order.value!!.copy(timeSlot = null)
     }
 }

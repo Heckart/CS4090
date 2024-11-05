@@ -5,12 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.cs4090.farmroutes.ui.order.select_address.SelectAddressScreen
-import com.cs4090.farmroutes.ui.order.choose_business.ChooseBusinessScreen
 import com.cs4090.farmroutes.ui.order.add_items.AddItemsScreen
+import com.cs4090.farmroutes.ui.order.checkout.CheckoutOrderScreen
+import com.cs4090.farmroutes.ui.order.choose_business.ChooseBusinessScreen
 import com.cs4090.farmroutes.ui.order.review_order.ReviewOrderScreen
 import com.cs4090.farmroutes.ui.order.schedule_delivery.ScheduleDeliveryScreen
-import com.cs4090.farmroutes.ui.order.checkout.CheckoutOrderScreen
+import com.cs4090.farmroutes.ui.order.select_address.SelectAddressScreen
 
 
 sealed class OrderScreen(val route: String) {
@@ -38,30 +38,31 @@ fun OrderNavigation(
         composable(OrderScreen.ChooseBusiness.route) {
             ChooseBusinessScreen(
                 onNext = { navController.navigate(OrderScreen.AddItems.route) },
-                onPrevious = {navController.navigate(OrderScreen.SelectAddress.route)}
+                onPrevious = { navController.navigate(OrderScreen.SelectAddress.route) }
             )
         }
         composable(OrderScreen.AddItems.route) {
             AddItemsScreen(
                 onNext = { navController.navigate(OrderScreen.ReviewOrder.route) },
-                onPrevious = {navController.navigate(OrderScreen.ChooseBusiness.route)}
+                onPrevious = { navController.navigate(OrderScreen.ChooseBusiness.route) }
             )
         }
         composable(OrderScreen.ReviewOrder.route) {
             ReviewOrderScreen(
                 onNext = { navController.navigate(OrderScreen.ScheduleDelivery.route) },
-                onPrevious = {navController.navigate(OrderScreen.AddItems.route)}
+                onPrevious = { navController.navigate(OrderScreen.AddItems.route) }
             )
         }
         composable(OrderScreen.ScheduleDelivery.route) {
             ScheduleDeliveryScreen(
                 onNext = { navController.navigate(OrderScreen.CheckoutOrder.route) },
-                onPrevious = {navController.navigate(OrderScreen.ReviewOrder.route)}
+                onPrevious = { navController.navigate(OrderScreen.ReviewOrder.route) }
             )
         }
         composable(OrderScreen.CheckoutOrder.route) {
             CheckoutOrderScreen(
-                onPrevious = {navController.navigate(OrderScreen.ScheduleDelivery.route)}
+                checkOut = {/* TODO - Checkout Logic */ },
+                onPrevious = { navController.navigate(OrderScreen.ScheduleDelivery.route) }
             )
         }
     }

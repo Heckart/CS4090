@@ -1,5 +1,8 @@
 package com.cs4090.farmroutes.data.models
 
+/**
+ * Enumerator for the labels of valid U.S. states.
+ */
 enum class USState(val abbreviation: String) {
     ALABAMA("AL"),
     ALASKA("AK"),
