@@ -45,8 +45,14 @@ void handle_post(web::http::http_request request) {
               jsonObject[U("status")]
                   .as_string(); // ORDERING, CONFIMRED, DISPATCHED, DELIVERED,
                                 // CANCELLED
-          // items: Hash map of <UPC (int), OrderItem>
-          // TODO: how to hande??
+                                // items: Hash map of <UPC (int), OrderItem>
+                                // TODO: how to hande??
+          // timeSlot: orderTimeSlot class (constains shopper class and date)
+          std::string shopperID = jsonObject[U("shopperID")].as_string();
+          std::string firstName = jsonObject[U("firstName")].as_string();
+          std::string lastName = jsonObject[U("lastName")].as_string();
+          // TODO: hanlde date somehow
+          // https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.js/-date/
 
           // log it...probably can delete
           std::cout << L"found orderID: " << orderID << std::endl;
@@ -56,7 +62,8 @@ void handle_post(web::http::http_request request) {
 
           // TODO: here the new data needs to be added to the database
           insert_to_db(orderID, userID, addressPrimary, addressSecondary, city,
-                       state, zipCode, businessName, businessAddress, status);
+                       state, zipCode, businessName, businessAddress, status,
+                       shopperID, firstName, lastName);
 
         } catch (const std::exception &e) {
           request.reply(web::http::status_codes::BadRequest,
@@ -71,8 +78,9 @@ void insert_to_db(const std::string &orderID, const std::string &userID,
                   const std::string &addressSecondary, const std::string &city,
                   const std::string &state, const std::string &zipCode,
                   const std::string &businessName,
-                  const std::string &businessAddress,
-                  const std::string &status) {
+                  const std::string &businessAddress, const std::string &status,
+                  const std::string &shopperID, const std::string &firstName,
+                  const std::string &lastName) {
   try {
     sql::mysql::MySQL_Driver *driver;
     sql::Connection *conn;
@@ -107,9 +115,10 @@ void insert_to_db(const std::string &orderID, const std::string &userID,
 
     std::cout << "location data inserted successfully!" << std::endl;
 
-    // TODO: addressSecondary, businessName, and businesAddress are unused.
-    // Further, we realy need to iron out how exactly we are going to
-    // appropriately handle the data we get from an order request.
+    // TODO: addressSecondary, businessName, businesAddress, shopperID,
+    // firstName, and lastName are unused. Further, we realy need to iron out
+    // how exactly we are going to appropriately handle the data we get from an
+    // order request.
 
     delete conn; // Clean up connection
   } catch (sql::SQLException &e) {

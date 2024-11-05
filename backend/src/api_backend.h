@@ -37,7 +37,8 @@ void insert_to_db(const std::string &orderID, const std::string &userID,
                   const std::string &addressSecondary, const std::string &city,
                   const std::string &state, const std::string &zipCode,
                   const std::string &businessName,
-                  const std::string &businessAddress,
-                  const std::string &status);
+                  const std::string &businessAddress, const std::string &status,
+                  const std::string &shopperID, const std::string &firstName,
+                  const std::string &lastName);
 
 #endif
