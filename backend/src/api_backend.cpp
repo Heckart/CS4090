@@ -36,6 +36,9 @@ void handle_request(web::http::http_request request) {
   } else if (path == U("/selectBusiness") &&
              request.method() == web::http::methods::POST) {
     handle_select_business(request);
+  } else if (path == U("/selectDriver") &&
+             request.method() == web::http::methods::POST) {
+    handle_select_shopper(request);
   } else {
     request.reply(web::http::status_codes::NotFound, U("Endpoint not found."));
   }
@@ -51,7 +54,7 @@ void handle_start_order(web::http::http_request request) {
 
           // Insert the order into the database and retrieve the generated
           // orderID
-          std::string orderID = insert_order_to_db(userID);
+          std::string orderID = insert_order_to_db(userID, addressInfo);
 
           // Fetch available businesses from the database
           web::json::value businessInfo = fetch_businesses_from_db();
@@ -105,7 +108,37 @@ void handle_select_business(web::http::http_request request) {
       .wait();
 }
 
-std::string insert_order_to_db(const std::string &userID) {
+void handle_select_shopper(web::http::http_request request) {
+  request.extract_json()
+      .then([=](web::json::value jsonObject) {
+        try {
+          std::string userID = utility::conversions::to_utf8string(
+              jsonObject[U("userID")].as_string());
+          std::string orderID = utility::conversions::to_utf8string(
+              jsonObject[U("orderID")].as_string());
+
+          // TODO: validate orderID exists?
+
+          // Fetch available shoppers from the database
+          web::json::value shoppersArray = fetch_shoppers_from_db();
+
+          // Construct response JSON
+          web::json::value response;
+          response[U("shoppers")] = shoppersArray;
+
+          // Send response to the client
+          request.reply(web::http::status_codes::OK, response);
+
+        } catch (const std::exception &e) {
+          request.reply(web::http::status_codes::BadRequest,
+                        U("Invalid data."));
+        }
+      })
+      .wait();
+}
+
+std::string insert_order_to_db(const std::string &userID,
+                               const web::json::value &addressInfo) {
   std::string orderID = generate_uuid();
 
   try {
@@ -117,13 +150,24 @@ std::string insert_order_to_db(const std::string &userID) {
     conn->setSchema("api_database");    // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
-        "INSERT INTO Orders (orderID, userID, status) VALUES (?, ?, "
-        "?)")); // the unused columns should be confgured to default to
-                // NULL values
+        "INSERT INTO Orders (orderID, userID, status, addressPrimary, "
+        "addressSecondary, city, state, zipCode) VALUES (?, ?, ?, ?, ?, ?, ?, "
+        "?)")); // the unused columns should be confgured to default to NULL
+                // values
 
     pstmt->setString(1, orderID);
     pstmt->setString(2, userID);
     pstmt->setString(3, "ORDERING");
+    pstmt->setString(4, utility::conversions::to_utf8string(
+                            addressInfo.at(U("addressPrimary")).as_string()));
+    pstmt->setString(5, utility::conversions::to_utf8string(
+                            addressInfo.at(U("addressSecondary")).as_string()));
+    pstmt->setString(6, utility::conversions::to_utf8string(
+                            addressInfo.at(U("city")).as_string()));
+    pstmt->setString(7, utility::conversions::to_utf8string(
+                            addressInfo.at(U("state")).as_string()));
+    pstmt->setString(8, utility::conversions::to_utf8string(
+                            addressInfo.at(U("zipCode")).as_string()));
 
     pstmt->executeUpdate();
 
@@ -190,16 +234,15 @@ web::json::value fetch_items_from_db(const std::string &businessID) {
     conn->setSchema("api_database");    // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
-        "SELECT upc, name, price FROM items WHERE businessID = "
-        "?")); // TODO: I'm totally making this up because this
-               // table isnt in our drawio schema yet
+        "SELECT UPC, name, price FROM Items WHERE businessID = "
+        "?"));
     pstmt->setString(1, businessID);
     std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
 
     int index = 0;
     while (res->next()) {
       web::json::value item;
-      item[U("upc")] = web::json::value::number(res->getInt64("upc"));
+      item[U("UPC")] = web::json::value::number(res->getInt64("UPC"));
       item[U("name")] = web::json::value::string(
           utility::conversions::to_string_t(res->getString("name")));
       item[U("price")] = web::json::value::number(
@@ -207,10 +250,65 @@ web::json::value fetch_items_from_db(const std::string &businessID) {
 
       itemsArray[index++] = item;
     }
-    return itemsArray;
+
+    delete conn;
 
   } catch (sql::SQLException &e) {
-    std::cerr << "SQL Eception: " << e.what() << std::endl;
+    std::cerr << "SQL Exception: " << e.what() << std::endl;
   }
   return itemsArray;
+}
+
+web::json::value fetch_shoppers_from_db() {
+  web::json::value shoppersArray = web::json::value::array();
+
+  try {
+    sql::mysql::MySQL_Driver *driver;
+    sql::Connection *conn;
+    driver = sql::mysql::get_mysql_driver_instance();
+    conn = driver->connect("tcp://localhost:3306", "username",
+                           "password"); // TODO: get correct credentials
+    conn->setSchema("api_database");    // TODO: what is this actually called?
+
+    // jobBoard has shopperID, which is a userID. Reference the Users table with
+    // the shopperID/userID to grab firstName and lastName
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
+        "SELECT shopperID, fulfillmentTime FROM JobBoard"));
+    std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
+
+    int index = 0;
+    while (res->next()) {
+      std::string shopperID = res->getString("shopperID");
+      std::string fulfillmentTime =
+          res->getString("fullfillmentTime"); // TODO: find out if this is
+                                              // actually stored as a string
+
+      // Query the user table to get the shopper's first and last name
+      std::unique_ptr<sql::PreparedStatement> userPstmt(conn->prepareStatement(
+          "SELECT firstName, lastName FROM user WHERE userID = ?"));
+      userPstmt->setString(1, shopperID);
+      std::unique_ptr<sql::ResultSet> userRes(userPstmt->executeQuery());
+
+      if (userRes->next()) {
+        // Populate JSON with shopper details
+        web::json::value shopper;
+        shopper[U("shopperID")] = web::json::value::string(
+            utility::conversions::to_string_t(shopperID));
+        shopper[U("firstName")] = web::json::value::string(
+            utility::conversions::to_string_t(userRes->getString("firstName")));
+        shopper[U("lastName")] = web::json::value::string(
+            utility::conversions::to_string_t(userRes->getString("lastName")));
+        shopper[U("fulfillmentTime")] = web::json::value::string(
+            utility::conversions::to_string_t(fulfillmentTime));
+
+        shoppersArray[index++] = shopper;
+      }
+    }
+
+    delete conn;
+
+  } catch (sql::SQLException &e) {
+    std::cerr << "SQL Exception: " << e.what() << std::endl;
+  }
+  return shoppersArray;
 }

@@ -31,14 +31,23 @@ void handle_request(web::http::http_request request);
 void handle_start_order(web::http::http_request request);
 
 /**
- * @brief Handles POST requests in JSON format to receive avaialable groceries.
+ * @brief Handles POST requests in JSON format to get available groceries.
  *
- * @param requst The HTTP request constaining the JSON payload.
+ * @param request The HTTP request constaining the JSON payload.
  *
- * @return Nothing. Responds to the client with an list of groceries avaialable
+ * @return Nothing. Responds to the client with a list of groceries avaialable
  * at the requested business.
  */
 void handle_select_business(web::http::http_request request);
+
+/**
+ * @brief Handles POST requests in JSON format to get available shoppers.
+ *
+ * @param request The HTTP request containing the JSON payload.
+ *
+ * @return Nothing. Responds to the client with a list of shoppers.
+ */
+void handle_select_shopper(web::http::http_request request);
 
 /**
  * @brief Handles inserting information from an order in to the proper DB
@@ -46,23 +55,35 @@ void handle_select_business(web::http::http_request request);
  *
  * @param userID The userID of the new order maker as supplied by POST request.
  *
+ * @param addressInfo The address for the delivery of the order as supplied by
+ * POST request.
+ *
  * @return The UUID generated for use as an orderID.
  */
-std::string insert_order_to_db(const std::string &userID);
+std::string insert_order_to_db(const std::string &userID,
+                               const web::json::value &addressInfo);
 
 /**
- * @brief Returns a list of business and their information from the business
- * info table.
+ * @brief Finds and returns a list of business and their information from the
+ * business info table.
  *
  * @return A JSON collection of businesses in the DB.
  */
 web::json::value fetch_businesses_from_db();
 
 /**
- * @brief Returns a list of items sold by a business.
+ * @brief Finds and returns a list of items sold by a business from the Items
+ * table.
  *
  * @return A JSON collection of items.
  */
 web::json::value fetch_items_from_db(const std::string &businessID);
+
+/**
+ * @brief Finds and returns a list of shoppers from the JobBoard table.
+ *
+ * @return A JSON collection of shoppers.
+ */
+web::json::value fetch_shoppers_from_db();
 
 #endif
