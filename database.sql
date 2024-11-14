@@ -1,44 +1,23 @@
+-- Step 1: Insert a user
+INSERT INTO Users (User ID, password, firstName, lastName) 
+VALUES ('101', 'password', 'John', 'Doe');
 
+-- Step 2: Insert a business
+INSERT INTO BusinessInfo (BusinessID, addressprimary, addresssecondary, city, state, zip_code) 
+VALUES ('B001', '123 Main St', 'Suite 100', 'Anytown', 'CA', '90210');
 
+-- Step 3: Insert an item associated with the business
+INSERT INTO Items (UPC, BusinessID, name, price) 
+VALUES ('UPC001', 'B001', 'Widget', 19.99);
 
+-- Step 4: Insert a shopper into JobBoard
+INSERT INTO JobBoard (ShopperID, fulfillmenttime) 
+VALUES ('101', '2023-10-01 12:00:00');
 
+-- Step 5: Insert an order associated with the user, business, and shopper
+INSERT INTO Orders (OrderID, UserID, BusinessID, ShopperID, Status, fulfillmentTime, addressprimary, addresssecondary, city, state, zip_code) 
+VALUES ('O001', '101', 'B001', '101', 'Pending', 30, '123 Main St', 'Suite 100', 'Anytown', 'CA', '90210');
 
-CREATE TABLE IF NOT EXISTS Users(
-    UserID TEXT UNIQUE NOT NULL,
-    password CHAR(80) NOT NULL,
-    address VARCHAR(255) NOT NULL,
-    Median_rating(int) NOT NULL,
-    PRIMARY KEY(USERID)
-);
-UPDATE USER SET Median_rating  = (SELECT AVG(rating) FROM review where user= review.person_reviewed)
-
-
-CREATE TABLE IF NOT EXISTS Orders (
-    OrderID TEXT UNIQUE NOT NULL,
-    UserID TEXT NOT NULL REFERENCES Users(UserID) ON DELETE RESTRICT,
-    ShopperID TEXT NOT NULL REFERENCES Users(UserID) ON DELETE RESTRICT,
-    Status TEXT,
-    PRIMARY KEY(OrderID)
-);
-
-
-
-CREATE TABLE IF NOT EXISTS location(
-
-    id SERIAL PRIMARY KEY,
-    city VARCHAR(100) NOT NULL,
-    state VARCHAR(50 NOT NULL),
-    address VARCHAR(255) NOT NULL,
-    zip_code VARCHAR(20) NOT NULL
-
-
-);
-
-
-CREATE TABLE IF NOT EXISTS Reviews(
-    OrderID TEXT UNIQUE NOT NULL REFERENCES Order(OrderID) ON DELETE RESTRICT,
-    reviewerID TEXT NOT NULL REFERENCES Users(UserID) ON DELETE RESTRICT,
-    Rating INTEGER NOT NULL CHECK(Rating>=1 AND Rating <=5),
-    Comments TEXT,
-    PRIMARY KEY (OrderId, ReviewerId)
-);
+-- Step 6: Insert an order item that references the order and the item
+INSERT INTO OrderItems (OrderID, UPC, quantity) 
+VALUES ('O001', 'UPC001', 2);
