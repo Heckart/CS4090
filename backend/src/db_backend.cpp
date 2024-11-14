@@ -112,7 +112,7 @@ web::json::value fetch_items_from_db(const std::string &businessID) {
     conn->setSchema("api_database");    // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
-        "SELECT UPC, name, price FROM Items WHERE businessID = "
+        "SELECT upc, name, price FROM Items WHERE businessID = "
         "?"));
     pstmt->setString(1, businessID);
     std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
@@ -120,7 +120,7 @@ web::json::value fetch_items_from_db(const std::string &businessID) {
     int index = 0;
     while (res->next()) {
       web::json::value item;
-      item[U("UPC")] = web::json::value::number(res->getInt64("UPC"));
+      item[U("upc")] = web::json::value::number(res->getInt64("upc"));
       item[U("name")] = web::json::value::string(
           utility::conversions::to_string_t(res->getString("name")));
       item[U("price")] = web::json::value::number(
