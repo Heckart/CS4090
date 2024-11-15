@@ -29,19 +29,19 @@ void handle_start_order(web::http::http_request request) {
       .then([=](web::json::value jsonObject) {
         try {
 
-	  /** Example of what JSON object strcuture this is looking for:
-	      {
-	        "userID": "01272"
-		"addressInfo": {
-		    addressPrimary: "123 Market Street",
-		    addressSecondary: "Apt 301",
-		    city: "Rolla",
-		    state: "MO",
-		    zipCode: "65401"
-		    }
-	       }
-	   */
-	  
+          /** Example of what JSON object strcuture this is looking for:
+              {
+                "userID": "01272"
+                "addressInfo": {
+                    addressPrimary: "123 Market Street",
+                    addressSecondary: "Apt 301",
+                    city: "Rolla",
+                    state: "MO",
+                    zipCode: "65401"
+                    }
+               }
+           */
+
           std::string userID = utility::conversions::to_utf8string(
               jsonObject[U("userID")].as_string());
           web::json::value addressInfo = jsonObject[U("addressInfo")];
@@ -64,7 +64,7 @@ void handle_start_order(web::http::http_request request) {
           /** Example of what JSON object structure this replies with:
               {
                "orderID": "NCS-263-A",
-	       "businessInfo": [
+               "businessInfo": [
                   {
                     "businessID": "12345",
                     "businessName": "Example Business",
@@ -107,10 +107,10 @@ void handle_select_business(web::http::http_request request) {
 
           /** Example of what JSON object structure this is looking for:
               {
-	        "userID": "38284",
-		"orderID": "38DBC-23S",
-		"businessID": "28382"
-	      }
+                "userID": "38284",
+                "orderID": "38DBC-23S",
+                "businessID": "28382"
+              }
            */
 
           // Extract userID, orderID, and businessID from the request JSON
@@ -125,7 +125,7 @@ void handle_select_business(web::http::http_request request) {
 
           // Fetch available items for the selected business from the database
           web::json::value itemsArray = fetch_items_from_db(businessID);
-          
+
           // Construct response JSON
           web::json::value response;
           response[U("businessID")] = web::json::value::string(
@@ -149,7 +149,7 @@ void handle_select_business(web::http::http_request request) {
                     "price": 29.99
                   }
                  ]
-	       }
+               }
            */
 
           request.reply(web::http::status_codes::OK, response);
@@ -168,9 +168,9 @@ void handle_select_shopper(web::http::http_request request) {
 
           /** Example of the JSON object structure this is looking for:
               {
-	        "userID": "84828",
-		"orderID": "ABC-3284"
-	      }
+                "userID": "84828",
+                "orderID": "ABC-3284"
+              }
            */
 
           std::string userID = utility::conversions::to_utf8string(
@@ -191,21 +191,21 @@ void handle_select_shopper(web::http::http_request request) {
 
           /** Example of the JSON object structure this replies with:
              {
-	       "shoppers": [
-	                     {
-			       "shopperID": "s123",
-			       "firstName": "Alice",
-			       "lastName": "Smith",
-			       "fulfillmentTime": "2023-11-14 10:30:00"
-			     },
-			     {
-			       "shopperID": "s456",
-			       "firstName": "Bob",
-			       "lastName": "Johnson",
-			       "fulfillmentTime": "2023-11-14 11:45:00"
-			     }
-			    ]
-	    }
+               "shoppers": [
+                             {
+                               "shopperID": "s123",
+                               "firstName": "Alice",
+                               "lastName": "Smith",
+                               "fulfillmentTime": "2023-11-14 10:30:00"
+                             },
+                             {
+                               "shopperID": "s456",
+                               "firstName": "Bob",
+                               "lastName": "Johnson",
+                               "fulfillmentTime": "2023-11-14 11:45:00"
+                             }
+                            ]
+            }
            */
 
           request.reply(web::http::status_codes::OK, response);
