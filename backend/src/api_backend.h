@@ -2,25 +2,43 @@
 #define APIBACKEND
 
 #include <cpprest/http_listener.h>
-#include <cpprest/json.h>
 
 /**
- * @brief Handles GET requests to collect and return information from a DB
+ * @brief Main listener function that routes requests.
  *
- * @param request The HTTP request object containing the DB request
+ * @param request The HTTP object containing the JSON payload.
  *
- * @return Nothing. Responds to the client with the requested information.
+ * @return Nothing.
  */
-void handle_get(web::http::http_request request);
+void handle_request(web::http::http_request request);
 
 /**
- * @brief Handles POST requests to receive user information in JSON format.
+ * @brief Handles POST requests in JSON format to start an order.
  *
  * @param request The HTTP request object containing the JSON payload.
  *
- * @return Nothing. Responds to the client that info has been received or that
- * an error as occured.
+ * @return Nothing. Responds to the client with an orderID and business info or
+ * that an error as occured.
  */
-void handle_post(web::http::http_request request);
+void handle_start_order(web::http::http_request request);
+
+/**
+ * @brief Handles POST requests in JSON format to get available groceries.
+ *
+ * @param request The HTTP request constaining the JSON payload.
+ *
+ * @return Nothing. Responds to the client with a list of groceries avaialable
+ * at the requested business.
+ */
+void handle_select_business(web::http::http_request request);
+
+/**
+ * @brief Handles POST requests in JSON format to get available shoppers.
+ *
+ * @param request The HTTP request containing the JSON payload.
+ *
+ * @return Nothing. Responds to the client with a list of shoppers.
+ */
+void handle_select_shopper(web::http::http_request request);
 
 #endif
