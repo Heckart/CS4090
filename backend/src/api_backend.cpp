@@ -217,3 +217,43 @@ void handle_select_shopper(web::http::http_request request) {
       })
       .wait();
 }
+
+void handle_shopper_confirm(web::http::http_request request) {
+  request.extract_json()
+      .then([=](web::json::value jsonObject) {
+        try {
+
+          /** Example of the JSON object structure this is looking for:
+              {
+                "userID": "84828",
+                "orderID": "ABC-3284",
+                "shopperID": "30543"
+              }
+           */
+
+          std::string userID = utility::conversions::to_utf8string(
+              jsonObject[U("userID")].as_string());
+          std::string orderID = utility::conversions::to_utf8string(
+              jsonObject[U("orderID")].as_string());
+          std::string shopperID = utility::conversions::to_utf8string(
+              jsonObject[U("shopperID")].as_string());
+
+          // TODO: validate orderID exists?
+
+          // Update the order's shopper in the DB
+          insert_shopper_to_order(orderID, shopperID);
+
+          /**
+           * Replies with an HTTP 200 OK Code, no JSON object
+           */
+
+          // Send response to the client
+          request.reply(web::http::status_codes::OK);
+
+        } catch (const std::exception &e) {
+          request.reply(web::http::status_codes::BadRequest,
+                        U("Invalid Data."));
+        }
+      })
+      .wait();
+}
