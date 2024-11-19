@@ -11,7 +11,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install dependencies 
-      run: sudo apt-get install -y g++ libcpprest-dev libcpprest2.10 libmysql++-dev libmysql++3t64 libmysqlcppconn-dev libmysqlcppconn7t64 uuid-dev
+      run: sudo apt-get install -y g++ libcpprest-dev libcpprest2.10 libmysql++-dev libmysqlcppconn-dev uuid-dev
 
     - name: Build backend 
       run: | 
