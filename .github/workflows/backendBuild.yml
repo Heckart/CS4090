@@ -1,0 +1,23 @@
+name: backendBuild 
+
+on: [push, pull_request]
+
+jobs:
+  Static_Analysis:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install dependencies 
+      run: sudo apt-get install -y g++ libcpprest-dev libcpprest2.10 libmysql++-dev libmysql++3t64 libmysqlcppconn-dev libmysqlcppconn7t64 uuid-dev
+
+    - name: Build backend 
+      run: mkdir -p build
+           cd build
+	   g++ backend/src/*.cpp -o api_backend -lcpprest -lboost_system -lssl -lcrypto -lpthread -lmysqlcppconn -luuid
+
+    - name: Verify build output
+      run: |
+           ls -l build/
