@@ -3,7 +3,7 @@ name: backendBuild
 on: [push, pull_request]
 
 jobs:
-  Static_Analysis:
+  Build_Test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
