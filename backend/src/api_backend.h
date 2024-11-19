@@ -49,4 +49,13 @@ void handle_select_shopper(web::http::http_request request);
  * @return Nothing. Responds to the client with an OK.
  */
 void handle_shopper_confirm(web::http::http_request request);
+
+/**
+ * @brief Handles POST  requests in JSON format to confirm an order.
+ *
+ * @param request The HTTP request containing the JSON payload.
+ *
+ * @param Nothing. Responds to the client with an OK.
+ */
+void handle_checkout(web::http::http_request request);
 #endif

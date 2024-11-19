@@ -34,6 +34,16 @@ void insert_shopper_to_order(const std::string &orderID,
                              const std::string &shopperID);
 
 /**
+ * @brief Inserts requested items for an order into the OrderItems table.
+ *
+ * @param orderID The order which is having items inserted.
+ *
+ * @return Nothing.
+ */
+void insert_items_to_order(const std::string &orderID,
+                           const web::json::value &items);
+
+/**
  * @brief Finds and returns a list of business and their information from the
  * business info table.
  *

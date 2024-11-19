@@ -16,9 +16,15 @@ void handle_request(web::http::http_request request) {
   } else if (path == U("/selectBusiness") &&
              request.method() == web::http::methods::POST) {
     handle_select_business(request);
-  } else if (path == U("/selectDriver") &&
+  } else if (path == U("/selectShopper") &&
              request.method() == web::http::methods::POST) {
     handle_select_shopper(request);
+  } else if (path == U("/confirmShopper") &&
+             request.method() == web::http::methods::POST) {
+    handle_shopper_confirm(request);
+  } else if (path == U("/checkout") &&
+             request.method() == web::http::methods::POST) {
+    handle_checkout(request);
   } else {
     request.reply(web::http::status_codes::NotFound, U("Endpoint not found."));
   }
@@ -242,6 +248,53 @@ void handle_shopper_confirm(web::http::http_request request) {
 
           // Update the order's shopper in the DB
           insert_shopper_to_order(orderID, shopperID);
+
+          /**
+           * Replies with an HTTP 200 OK Code, no JSON object
+           */
+
+          // Send response to the client
+          request.reply(web::http::status_codes::OK);
+
+        } catch (const std::exception &e) {
+          request.reply(web::http::status_codes::BadRequest,
+                        U("Invalid Data."));
+        }
+      })
+      .wait();
+}
+
+void handle_checkout(web::http::http_request request) {
+  request.extract_json()
+      .then([=](web::json::value jsonObject) {
+        try {
+          /** Example of the JSON object structure this is looking for:
+              {
+                "userID": "29453",
+                "orderID": "BCF-453",
+                "items": [
+                           {
+                             "upc": 924292,
+                             "quantity": 2
+                           },
+                           {
+                             "upc": 230934,
+                             "quantity": 1
+                           }
+                         ]
+              }
+           */
+
+          std::string userID = utility::conversions::to_utf8string(
+              jsonObject[U("userID")].as_string());
+          std::string orderID = utility::conversions::to_utf8string(
+              jsonObject[U("orderID")].as_string());
+          web::json::value items = jsonObject[U("items")];
+
+          // TODO: validate orderID exists?
+
+          // Update the order's items in the DB.
+          insert_items_to_order(orderID, items);
 
           /**
            * Replies with an HTTP 200 OK Code, no JSON object

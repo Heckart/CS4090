@@ -82,6 +82,42 @@ void insert_shopper_to_order(const std::string &orderID,
   return;
 }
 
+void insert_items_to_order(const std::string &orderID,
+                           const web::json::value &items) {
+  try {
+    sql::mysql::MySQL_Driver *driver;
+    sql::Connection *conn;
+
+    driver = sql::mysql::get_driver_instance();
+    conn = driver->connect("tcp://localhost:3306", "username",
+                           "password"); // TODO: get correct credentials
+    conn->setSchema("api_database");    // TODO: what is this actually called?
+
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
+        "INSERT INTO OrderItems (orderID, upc, quantity) VALUES (?, ?, ?)"));
+
+    // TODO: What about dupicates?
+
+    for (const auto &item : items.as_array()) {
+      int upc = item.at(U("upc")).as_integer();
+      int quantity = item.at(U("quantity")).as_integer();
+
+      pstmt->setString(1, orderID);
+      pstmt->setInt(2, upc);
+      pstmt->setInt(3, quantity);
+
+      pstmt->executeUpdate();
+    }
+
+    delete conn;
+
+  } catch (sql::SQLException &e) {
+    std::cerr << "SQL Exception: " << e.what() << std::endl;
+  }
+
+  return;
+}
+
 web::json::value fetch_businesses_from_db() {
   web::json::value businessArray = web::json::value::array();
   try {
