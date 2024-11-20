@@ -10,9 +10,9 @@
 std::string generate_uuid() {
   uuid_t uuid;
   uuid_generate(uuid);
-  char uuid_str[37];
-  uuid_unparse(uuid, uuid_str);
-  return std::string(uuid_str);
+  std::array<char, 37> uuid_str;
+  uuid_unparse(uuid, uuid_str.data());
+  return std::string(uuid_str.data());
 }
 
 std::string insert_order_to_db(const std::string &userID,
@@ -54,6 +54,68 @@ std::string insert_order_to_db(const std::string &userID,
     std::cerr << "SQL Exception: " << e.what() << std::endl;
   }
   return orderID;
+}
+
+void insert_shopper_to_order(const std::string &orderID,
+                             const std::string &shopperID) {
+  try {
+    sql::mysql::MySQL_Driver *driver;
+    sql::Connection *conn;
+
+    driver = sql::mysql::get_driver_instance();
+    conn = driver->connect("tcp://localhost:3306", "username",
+                           "password"); // TODO: get correct credentials
+    conn->setSchema("api_database");    // TODO: what is this actually called?
+
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
+        "UPDATE Orders SET shopperID = ? WHERE orderID = ?"));
+
+    pstmt->setString(1, shopperID);
+    pstmt->setString(2, orderID);
+
+    delete conn;
+
+  } catch (sql::SQLException &e) {
+    std::cerr << "SQL Excpetion: " << e.what() << std::endl;
+  }
+
+  return;
+}
+
+void insert_items_to_order(const std::string &orderID,
+                           const web::json::value &items) {
+  try {
+    sql::mysql::MySQL_Driver *driver;
+    sql::Connection *conn;
+
+    driver = sql::mysql::get_driver_instance();
+    conn = driver->connect("tcp://localhost:3306", "username",
+                           "password"); // TODO: get correct credentials
+    conn->setSchema("api_database");    // TODO: what is this actually called?
+
+    std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
+        "INSERT INTO OrderItems (orderID, upc, quantity) VALUES (?, ?, ?)"));
+
+    // TODO: What about dupicates?
+
+    for (const auto &item : items.as_array()) {
+      int upc = item.at(U("upc")).as_integer();
+      int quantity = item.at(U("quantity")).as_integer();
+
+      pstmt->setString(1, orderID);
+      pstmt->setInt(2, upc);
+      pstmt->setInt(3, quantity);
+
+      pstmt->executeUpdate();
+    }
+
+    delete conn;
+
+  } catch (sql::SQLException &e) {
+    std::cerr << "SQL Exception: " << e.what() << std::endl;
+  }
+
+  return;
 }
 
 web::json::value fetch_businesses_from_db() {
@@ -163,7 +225,7 @@ web::json::value fetch_shoppers_from_db() {
 
       // Query the user table to get the shopper's first and last name
       std::unique_ptr<sql::PreparedStatement> userPstmt(conn->prepareStatement(
-          "SELECT firstName, lastName FROM user WHERE userID = ?"));
+          "SELECT firstName, lastName FROM Users WHERE userID = ?"));
       userPstmt->setString(1, shopperID);
       std::unique_ptr<sql::ResultSet> userRes(userPstmt->executeQuery());
 

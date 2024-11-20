@@ -5,7 +5,7 @@
 /**
  * @brief Utility function to generate a UUID for orderID.
  *
- * @return A 37 character UUID as a string.
+ * @return A 36 character UUID as a string.
  */
 std::string generate_uuid();
 
@@ -14,7 +14,6 @@ std::string generate_uuid();
  * tables.
  *
  * @param userID The userID of the new order maker as supplied by POST request.
- *
  * @param addressInfo The address for the delivery of the order as supplied by
  * POST request.
  *
@@ -22,6 +21,27 @@ std::string generate_uuid();
  */
 std::string insert_order_to_db(const std::string &userID,
                                const web::json::value &addressInfo);
+
+/**
+ * @brief Inserts a shopperID to an column in the Orders table.
+ *
+ * @param orderID The order which is being given a shopper.
+ * @param shopperID The shopperID tasked with fulfilling the order.
+ *
+ * @return Nothing.
+ */
+void insert_shopper_to_order(const std::string &orderID,
+                             const std::string &shopperID);
+
+/**
+ * @brief Inserts requested items for an order into the OrderItems table.
+ *
+ * @param orderID The order which is having items inserted.
+ *
+ * @return Nothing.
+ */
+void insert_items_to_order(const std::string &orderID,
+                           const web::json::value &items);
 
 /**
  * @brief Finds and returns a list of business and their information from the

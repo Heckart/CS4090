@@ -41,4 +41,21 @@ void handle_select_business(web::http::http_request request);
  */
 void handle_select_shopper(web::http::http_request request);
 
+/**
+ * @brief Handles POST requests in JSON format to get a shopper confirmation.
+ *
+ * @param request The HTTP request containing the JSON payload.
+ *
+ * @return Nothing. Responds to the client with an OK.
+ */
+void handle_shopper_confirm(web::http::http_request request);
+
+/**
+ * @brief Handles POST  requests in JSON format to confirm an order.
+ *
+ * @param request The HTTP request containing the JSON payload.
+ *
+ * @param Nothing. Responds to the client with an OK.
+ */
+void handle_checkout(web::http::http_request request);
 #endif
