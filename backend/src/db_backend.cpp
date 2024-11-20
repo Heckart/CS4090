@@ -225,7 +225,7 @@ web::json::value fetch_shoppers_from_db() {
 
       // Query the user table to get the shopper's first and last name
       std::unique_ptr<sql::PreparedStatement> userPstmt(conn->prepareStatement(
-          "SELECT firstName, lastName FROM user WHERE userID = ?"));
+          "SELECT firstName, lastName FROM Users WHERE userID = ?"));
       userPstmt->setString(1, shopperID);
       std::unique_ptr<sql::ResultSet> userRes(userPstmt->executeQuery());
 
