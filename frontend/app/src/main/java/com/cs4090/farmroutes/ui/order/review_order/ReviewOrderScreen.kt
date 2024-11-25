@@ -23,7 +23,9 @@ import com.cs4090.farmroutes.utils.formatPrice
 
 @Composable
 fun ReviewOrderScreen(
-    viewModel: ReviewOrderViewModel = viewModel(), onNext: () -> Unit, onPrevious: () -> Unit
+    viewModel: ReviewOrderViewModel = viewModel(),
+    onNext: () -> Unit,
+    onPrevious: () -> Unit
 ) {
     val orderState = OrderRepository.order.observeAsState()
     val order = orderState.value
@@ -50,7 +52,11 @@ fun ReviewOrderScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Sending Order To:", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text(
+                    text = "Sending Order To:",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
                 Text(text = "${order?.deliveryAddress?.addressPrimary} ${order?.deliveryAddress?.addressSecondary}")
                 Text(text = "${order?.deliveryAddress?.city}, ${order?.deliveryAddress?.state?.abbreviation} ${order?.deliveryAddress?.zipCode}")
             }
@@ -64,7 +70,11 @@ fun ReviewOrderScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Delivery Through:", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text(
+                    text = "Delivery Through:",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
                 Text(text = "${order?.businessInfo?.businessName}")
                 Text(text = "${order?.businessInfo?.businessAddress?.addressPrimary} ${order?.businessInfo?.businessAddress?.addressSecondary}")
                 Text(text = "${order?.businessInfo?.businessAddress?.city}, ${order?.businessInfo?.businessAddress?.state?.abbreviation} ${order?.businessInfo?.businessAddress?.zipCode}")
@@ -79,7 +89,11 @@ fun ReviewOrderScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Shopping Cart:", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text(
+                    text = "Shopping Cart:",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
                 if (order?.items != null) {
                     for (item in order.items.values.toList()) {
                         runningTotal += item.price * item.quantity
@@ -104,7 +118,10 @@ fun ReviewOrderScreen(
                         }
                     }
                 } else {
-                    Text(text = "No items in cart.", fontStyle = FontStyle.Italic)
+                    Text(
+                        text = "No items in cart.",
+                        fontStyle = FontStyle.Italic
+                    )
                 }
             }
         }

@@ -24,7 +24,9 @@ import com.cs4090.farmroutes.utils.formatPrice
 
 @Composable
 fun CheckoutOrderScreen(
-    viewModel: CheckoutOrderViewModel = viewModel(), checkOut: () -> Unit, onPrevious: () -> Unit
+    viewModel: CheckoutOrderViewModel = viewModel(),
+    checkOut: () -> Unit,
+    onPrevious: () -> Unit
 ) {
     val orderState = OrderRepository.order.observeAsState()
     val order = orderState.value
@@ -49,7 +51,11 @@ fun CheckoutOrderScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Sending Order To:", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text(
+                    text = "Sending Order To:",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
                 Text(text = "${order?.deliveryAddress?.addressPrimary} ${order?.deliveryAddress?.addressSecondary}")
                 Text(text = "${order?.deliveryAddress?.city}, ${order?.deliveryAddress?.state?.abbreviation} ${order?.deliveryAddress?.zipCode}")
             }
@@ -63,7 +69,11 @@ fun CheckoutOrderScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Delivery Through:", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text(
+                    text = "Delivery Through:",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
                 Text(text = "${order?.businessInfo?.businessName}")
                 Text(text = "${order?.businessInfo?.businessAddress?.addressPrimary} ${order?.businessInfo?.businessAddress?.addressSecondary}")
                 Text(text = "${order?.businessInfo?.businessAddress?.city}, ${order?.businessInfo?.businessAddress?.state?.abbreviation} ${order?.businessInfo?.businessAddress?.zipCode}")
@@ -78,9 +88,13 @@ fun CheckoutOrderScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Delivery Details", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
-                Text(text = "Shopper:    ${order?.timeSlot?.shopper?.firstName} ${order?.timeSlot?.shopper?.lastName}")
-                Text(text = "Order Time: ${order?.timeSlot?.orderTime.toString()}")
+                Text(
+                    text = "Delivery Details",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
+                Text(text = "Shopper:    ${order?.timeSlot?.firstName} ${order?.timeSlot?.lastName}")
+                Text(text = "Order Time: ${order?.timeSlot?.fulfillmentTime.toString()}")
             }
         }
 

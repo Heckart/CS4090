@@ -17,8 +17,11 @@
 
 - Create a form which takes in input from the user.
 - Handle the values of the form in each screen's view model.
-- When advancing to the next step, save the data from the form to the `OrderRepository`
-- Handle any logic for going backwards and choosing a different option in a previous screen.
+- When advancing to the next step, save the data from the form to the
+  `OrderRepository`
+- Handle any logic for going backwards and choosing a different option in a
+  previous screen.
     - i.e. When a user selects a different business to order from.
-        - Warn the user their current items will be deleted, and then clear their items.
+        - Warn the user their current items will be deleted, and then clear
+          their items.
 - Construct unit tests for each screen.

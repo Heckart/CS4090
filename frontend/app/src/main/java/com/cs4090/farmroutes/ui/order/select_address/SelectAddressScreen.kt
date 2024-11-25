@@ -33,7 +33,11 @@ fun SelectAddressScreen(
 
         OutlinedTextField(
             value = viewModel.primaryAddress,
-            onValueChange = { primaryAddress -> viewModel.updatePrimaryAddressInfo(primaryAddress) },
+            onValueChange = { primaryAddress ->
+                viewModel.updatePrimaryAddressInfo(
+                    primaryAddress
+                )
+            },
             label = { Text("Primary Address Information") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,12 +108,16 @@ fun StateDropdown(
         )
 
         // Dropdown menu
-        DropdownMenu(expanded = dropdownExpanded, onDismissRequest = { dropdownExpanded = false }) {
+        DropdownMenu(
+            expanded = dropdownExpanded,
+            onDismissRequest = { dropdownExpanded = false }) {
             USState.entries.forEach { state ->
-                DropdownMenuItem(text = { Text(text = state.toString()) }, onClick = {
-                    onStateSelected(state)
-                    dropdownExpanded = false
-                })
+                DropdownMenuItem(
+                    text = { Text(text = state.toString()) },
+                    onClick = {
+                        onStateSelected(state)
+                        dropdownExpanded = false
+                    })
             }
         }
     }

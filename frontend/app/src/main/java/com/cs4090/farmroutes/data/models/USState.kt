@@ -56,6 +56,6 @@ enum class USState(val abbreviation: String) {
     WYOMING("WY");
 
     override fun toString(): String {
-        return "$name ($abbreviation)"
+        return abbreviation
     }
 }

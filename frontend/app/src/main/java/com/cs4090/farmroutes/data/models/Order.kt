@@ -17,5 +17,9 @@ data class Order(
     var businessInfo: BusinessInformation? = null,
     var status: OrderStatus,
     var items: Map<UPC, OrderItem>, // TODO - Maybe rename to cart?
-    var timeSlot: OrderTimeSlot? = null
+    var timeSlot: OrderTimeSlot? = null,
+    //
+    val availableBusinesses: List<BusinessInformation>? = emptyList(),
+    val availableItems: Map<UPC, OrderItem>? = emptyMap(),
+    val availableShoppers: List<OrderTimeSlot>? = emptyList()
 )

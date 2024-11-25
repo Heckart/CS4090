@@ -14,7 +14,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,9 +26,11 @@ import com.cs4090.farmroutes.ui.theme.FarmroutesTheme
 
 @Composable
 fun ScheduleDeliveryScreen(
-    viewModel: ScheduleDeliveryViewModel = viewModel(), onNext: () -> Unit, onPrevious: () -> Unit
+    viewModel: ScheduleDeliveryViewModel = viewModel(),
+    onNext: () -> Unit,
+    onPrevious: () -> Unit
 ) {
-    val availableTimeSlots = viewModel.availableTimeSlots.observeAsState(emptyList())
+    val availableTimeSlots = viewModel.availableTimeSlots!!
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -39,11 +40,12 @@ fun ScheduleDeliveryScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
         LazyColumn {
-            items(availableTimeSlots.value) { timeSlot ->
-                TimeSlotCard(timeSlot = timeSlot, onClick = { selectedTimeSlot ->
-                    viewModel.updateSelectedTimeSlot(selectedTimeSlot)
-                    onNext()
-                })
+            items(availableTimeSlots) { timeSlot ->
+                TimeSlotCard(timeSlot = timeSlot,
+                    onClick = { selectedTimeSlot ->
+                        viewModel.updateSelectedTimeSlot(selectedTimeSlot)
+                        onNext()
+                    })
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -70,13 +72,16 @@ fun TimeSlotCard(timeSlot: OrderTimeSlot, onClick: (OrderTimeSlot) -> Unit) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "${timeSlot.shopper.firstName} ${timeSlot.shopper.lastName}",
+                text = "${timeSlot.firstName} ${timeSlot.lastName}",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )
-            Text(text = timeSlot.orderTime.toString(), fontSize = 16.sp)
+            Text(text = timeSlot.fulfillmentTime.toString(), fontSize = 16.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { onClick(timeSlot) }, modifier = Modifier.align(Alignment.End)) {
+            Button(
+                onClick = { onClick(timeSlot) },
+                modifier = Modifier.align(Alignment.End)
+            ) {
                 Text(text = "Select")
             }
         }

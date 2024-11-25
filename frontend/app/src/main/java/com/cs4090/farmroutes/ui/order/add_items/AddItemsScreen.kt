@@ -21,7 +21,9 @@ import com.cs4090.farmroutes.utils.formatPrice
 
 @Composable
 fun AddItemsScreen(
-    viewModel: AddItemsViewModel = viewModel(), onNext: () -> Unit, onPrevious: () -> Unit
+    viewModel: AddItemsViewModel = viewModel(),
+    onNext: () -> Unit,
+    onPrevious: () -> Unit
 ) {
     // All available items for purchase
     val availableItems = viewModel.availableItems
@@ -66,7 +68,7 @@ fun AddItemsScreen(
                 .fillMaxWidth()
         ) {
             LazyColumn {
-                items(availableItems.entries.toList()) { (upc, item) ->
+                items(availableItems!!.entries.toList()) { (upc, item) ->
                     order?.items?.get(upc)?.quantity ?: 0
                     Card(
                         modifier = Modifier
@@ -76,14 +78,21 @@ fun AddItemsScreen(
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
-                                text = item.name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold
+                                text = item.name,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = formatPrice(item.price), fontSize = 16.sp)
+                            Text(
+                                text = formatPrice(item.price),
+                                fontSize = 16.sp
+                            )
                             Text(
                                 text = "In Cart: ${item.quantity}",
                                 fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onBackground.copy(
+                                    alpha = 0.7f
+                                )
                             )
 
                             Spacer(modifier = Modifier.height(8.dp))
@@ -96,14 +105,21 @@ fun AddItemsScreen(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Button(
-                                    onClick = { viewModel.removeItemFromCart(item.upc) },
+                                    onClick = {
+                                        viewModel.removeItemFromCart(
+                                            item.upc
+                                        )
+                                    },
                                     contentPadding = PaddingValues(
                                         horizontal = 12.dp, vertical = 4.dp
                                     )
                                 ) {
                                     Text("-")
                                 }
-                                Text(text = "Quantity: ${item.quantity}", fontSize = 16.sp)
+                                Text(
+                                    text = "Quantity: ${item.quantity}",
+                                    fontSize = 16.sp
+                                )
                                 Button(
                                     onClick = { viewModel.addItemToCart(item.upc) },
                                     contentPadding = PaddingValues(
