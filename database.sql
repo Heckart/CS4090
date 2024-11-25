@@ -59,3 +59,22 @@ CREATE TABLE IF NOT EXISTS OrderItems (
     FOREIGN KEY (orderID) REFERENCES Orders(orderID),
     FOREIGN KEY (upc) REFERENCES Items(upc)
 );
+
+
+INSERT INTO Users (userID, password, firstName, lastName) 
+VALUES ('101', 'password', 'John', 'Doe');
+
+INSERT INTO BusinessInfo (businessID, addressprimary, addresssecondary, city, stateRegion, zipCode) 
+VALUES ('B001', '123 Main St', 'Suite 100', 'Anytown', 'CA', '90210');
+
+INSERT INTO Items (upc, businessID, name, price) 
+VALUES ('UPC001', 'B001', 'Apple', 19.99);
+
+INSERT INTO JobBoard (shopperID, fulfillmentTime) 
+VALUES ('101', '2023-10-01 12:00:00');
+
+INSERT INTO Orders (orderID, userID, businessID, shopperID, status, fulfillmentTime, addressPrimary, addressSecondary, city, stateRegion, zipCode) 
+VALUES ('001', '101', 'B001', '101', 'Pending', 30, '123 Main St', 'Suite 100', 'Anytown', 'CA', '90210');
+
+INSERT INTO OrderItems (orderID, upc, quantity) 
+VALUES ('001', 'UPC001', 2);
