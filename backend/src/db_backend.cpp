@@ -23,9 +23,10 @@ std::string insert_order_to_db(const std::string &userID,
     sql::mysql::MySQL_Driver *driver;
     sql::Connection *conn;
     driver = sql::mysql::get_driver_instance();
-    conn = driver->connect("tcp://localhost:3306", "username",
-                           "password"); // TODO: get correct credentials
-    conn->setSchema("api_database");    // TODO: what is this actually called?
+    conn = driver->connect("tcp:10.0.2.15:3306", "abstract-programmer",
+                           "example-pass"); // TODO: get correct credentials
+    conn->setSchema(
+        "FarmRoutesDatabase"); // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
         "INSERT INTO Orders (orderID, userID, status, addressPrimary, "
@@ -63,9 +64,10 @@ void insert_shopper_to_order(const std::string &orderID,
     sql::Connection *conn;
 
     driver = sql::mysql::get_driver_instance();
-    conn = driver->connect("tcp://localhost:3306", "username",
-                           "password"); // TODO: get correct credentials
-    conn->setSchema("api_database");    // TODO: what is this actually called?
+    conn = driver->connect("tcp:10.0.2.15:3306", "abstract-programmer",
+                           "example-pass"); // TODO: get correct credentials
+    conn->setSchema(
+        "FarmRoutesDatabase"); // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
         "UPDATE Orders SET shopperID = ? WHERE orderID = ?"));
@@ -89,9 +91,10 @@ void insert_items_to_order(const std::string &orderID,
     sql::Connection *conn;
 
     driver = sql::mysql::get_driver_instance();
-    conn = driver->connect("tcp://localhost:3306", "username",
-                           "password"); // TODO: get correct credentials
-    conn->setSchema("api_database");    // TODO: what is this actually called?
+    conn = driver->connect("tcp:10.0.2.15:3306", "abstract-programmer",
+                           "example-pass"); // TODO: get correct credentials
+    conn->setSchema(
+        "FarmRoutesDatabase"); // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
         "INSERT INTO OrderItems (orderID, upc, quantity) VALUES (?, ?, ?)"));
@@ -124,9 +127,10 @@ web::json::value fetch_businesses_from_db() {
     sql::mysql::MySQL_Driver *driver;
     sql::Connection *conn;
     driver = sql::mysql::get_mysql_driver_instance();
-    conn = driver->connect("tcp://localhost:3306", "username",
-                           "password"); // TODO: get correct credentials
-    conn->setSchema("api_database");    // TODO: what is this actually called?
+    conn = driver->connect("tcp:10.0.2.15:3306", "abstract-programmer",
+                           "example-pass"); // TODO: get correct credentials
+    conn->setSchema(
+        "FarmRoutesDatabase"); // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(
         conn->prepareStatement("SELECT * FROM BusinessInfo"));
@@ -169,9 +173,10 @@ web::json::value fetch_items_from_db(const std::string &businessID) {
     sql::mysql::MySQL_Driver *driver;
     sql::Connection *conn;
     driver = sql::mysql::get_mysql_driver_instance();
-    conn = driver->connect("tcp://localhost:3306", "username",
-                           "password"); // TODO: get correct credentials
-    conn->setSchema("api_database");    // TODO: what is this actually called?
+    conn = driver->connect("tcp:10.0.2.15:3306", "abstract-programmer",
+                           "example-pass"); // TODO: get correct credentials
+    conn->setSchema(
+        "FarmRoutesDatabase"); // TODO: what is this actually called?
 
     std::unique_ptr<sql::PreparedStatement> pstmt(conn->prepareStatement(
         "SELECT upc, name, price FROM Items WHERE businessID = "
@@ -206,9 +211,10 @@ web::json::value fetch_shoppers_from_db() {
     sql::mysql::MySQL_Driver *driver;
     sql::Connection *conn;
     driver = sql::mysql::get_mysql_driver_instance();
-    conn = driver->connect("tcp://localhost:3306", "username",
-                           "password"); // TODO: get correct credentials
-    conn->setSchema("api_database");    // TODO: what is this actually called?
+    conn = driver->connect("tcp:10.0.2.15:3306", "abstract-programmer",
+                           "example-pass"); // TODO: get correct credentials
+    conn->setSchema(
+        "FarmRoutesDatabase"); // TODO: what is this actually called?
 
     // jobBoard has shopperID, which is a userID. Reference the Users table with
     // the shopperID/userID to grab firstName and lastName
