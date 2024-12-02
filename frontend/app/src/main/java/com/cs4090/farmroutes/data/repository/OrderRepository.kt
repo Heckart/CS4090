@@ -65,6 +65,14 @@ object OrderRepository {
         _order.value = _order.value!!.copy(items = emptyMap())
     }
 
+    fun setAvailableItems(items: Map<UPC, OrderItem>) {
+        _order.value = _order.value!!.copy(availableItems = items)
+    }
+
+    fun clearAvailableItems() {
+        _order.value = _order.value!!.copy(availableItems = emptyMap())
+    }
+
     fun updateStatus(status: OrderStatus) {
         _order.value = _order.value!!.copy(status = status)
     }
@@ -75,5 +83,13 @@ object OrderRepository {
 
     fun removeTimeSlot(timeSlot: OrderTimeSlot) {
         _order.value = _order.value!!.copy(timeSlot = null)
+    }
+
+    fun updateAvailableBusinesses(businesses: List<BusinessInformation>) {
+        _order.value = _order.value!!.copy(availableBusinesses = businesses)
+    }
+
+    fun updateAvailableShoppers(shoppers: List<OrderTimeSlot>) {
+        _order.value = _order.value!!.copy(availableShoppers = shoppers)
     }
 }

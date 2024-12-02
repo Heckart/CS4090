@@ -26,7 +26,9 @@ fun ChooseBusinessScreen(
     onNext: () -> Unit,
     onPrevious: () -> Unit
 ) {
-    val availableBusinesses by viewModel.availableBusinesses.observeAsState(emptyList())
+    val availableBusinesses by viewModel.availableBusinesses.observeAsState(
+        emptyList()
+    )
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -37,10 +39,12 @@ fun ChooseBusinessScreen(
         )
         LazyColumn {
             items(availableBusinesses) { business ->
-                BusinessItemCard(business = business, onClick = { selectedBusiness ->
-                    viewModel.updateSelectedBusiness(selectedBusiness)
-                    onNext()
-                })
+                BusinessItemCard(
+                    business = business,
+                    onClick = { selectedBusiness ->
+                        viewModel.updateSelectedBusiness(selectedBusiness)
+                        onNext()
+                    })
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -58,7 +62,10 @@ fun ChooseBusinessScreen(
 }
 
 @Composable
-fun BusinessItemCard(business: BusinessInformation, onClick: (BusinessInformation) -> Unit) {
+fun BusinessItemCard(
+    business: BusinessInformation,
+    onClick: (BusinessInformation) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,7 +78,10 @@ fun BusinessItemCard(business: BusinessInformation, onClick: (BusinessInformatio
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )
-            Text(text = business.businessAddress.addressPrimary, fontSize = 16.sp)
+            Text(
+                text = business.businessAddress.addressPrimary,
+                fontSize = 16.sp
+            )
             business.businessAddress.addressSecondary?.let {
                 Text(text = it, fontSize = 14.sp)
             }
@@ -80,7 +90,10 @@ fun BusinessItemCard(business: BusinessInformation, onClick: (BusinessInformatio
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { onClick(business) }, modifier = Modifier.align(Alignment.End)) {
+            Button(
+                onClick = { onClick(business) },
+                modifier = Modifier.align(Alignment.End)
+            ) {
                 Text(text = "Select")
             }
         }

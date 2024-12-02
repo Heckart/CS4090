@@ -1,5 +1,7 @@
 package com.cs4090.farmroutes.data.models
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * A collection of the information of where a delivery is to.
  *
@@ -10,9 +12,14 @@ package com.cs4090.farmroutes.data.models
  * @property zipCode The postal code of where the delivery is to.
  */
 data class AddressInformation(
-    var addressPrimary: String,
-    var addressSecondary: String? = null,
-    var city: String,
-    var state: USState,
-    var zipCode: String,
+    @SerializedName("addressPrimary")
+    val addressPrimary: String,
+    @SerializedName("addressSecondary")
+    val addressSecondary: String? = null,
+    @SerializedName("city")
+    val city: String,
+    @SerializedName("state")
+    val state: USState,
+    @SerializedName("zipCode")
+    val zipCode: String
 )
