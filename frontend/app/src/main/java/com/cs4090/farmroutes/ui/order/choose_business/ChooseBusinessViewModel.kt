@@ -8,6 +8,7 @@ import com.cs4090.farmroutes.data.models.BusinessInformation
 import com.cs4090.farmroutes.data.models.OrderItem
 import com.cs4090.farmroutes.data.models.UPC
 import com.cs4090.farmroutes.data.repository.OrderRepository
+import com.cs4090.farmroutes.server_url
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
@@ -37,7 +38,7 @@ data class sendObj(
 
 class ChooseBusinessViewModel : ViewModel() {
     var okHttpCLient = OkHttpClient()
-    var serverUrl: String = "http://localhost:8080/selectBusiness"
+    var serverUrl: String = server_url + "/selectBusiness"
 
     val order = OrderRepository.order
 

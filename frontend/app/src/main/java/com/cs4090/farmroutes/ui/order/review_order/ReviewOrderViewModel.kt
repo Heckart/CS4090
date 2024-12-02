@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.cs4090.farmroutes.data.models.OrderTimeSlot
 import com.cs4090.farmroutes.data.repository.OrderRepository
+import com.cs4090.farmroutes.server_url
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
@@ -24,7 +25,7 @@ data class responseObj(
 
 class ReviewOrderViewModel() : ViewModel() {
     var okHttpCLient = OkHttpClient()
-    var serverUrl: String = "http://localhost:8080/getShoppers"
+    var serverUrl: String = server_url + "/getShoppers"
 
     val order = OrderRepository.order
 

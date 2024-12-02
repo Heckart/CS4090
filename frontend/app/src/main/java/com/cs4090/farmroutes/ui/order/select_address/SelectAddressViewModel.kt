@@ -9,6 +9,7 @@ import com.cs4090.farmroutes.data.models.AddressInformation
 import com.cs4090.farmroutes.data.models.BusinessInformation
 import com.cs4090.farmroutes.data.models.USState
 import com.cs4090.farmroutes.data.repository.OrderRepository
+import com.cs4090.farmroutes.server_url
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
@@ -31,7 +32,7 @@ data class responseObj(
 
 class SelectAddressViewModel() : ViewModel() {
     var okHttpCLient = OkHttpClient()
-    var serverUrl: String = "http://localhost:8080/startOrder"
+    var serverUrl: String = server_url + "/startOrder"
 
     val order = OrderRepository.order
 
