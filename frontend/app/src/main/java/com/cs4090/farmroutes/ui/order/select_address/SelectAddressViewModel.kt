@@ -17,17 +17,13 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 
 data class sendObj(
-    @SerializedName("userID")
-    val userID: String,
-    @SerializedName("addressInfo")
-    val addressInfo: AddressInformation
+    @SerializedName("userID") val userID: String,
+    @SerializedName("addressInfo") val addressInfo: AddressInformation
 )
 
 data class responseObj(
-    @SerializedName("orderID")
-    val orderID: String,
-    @SerializedName("businessInfo")
-    val businessInformation: List<BusinessInformation>,
+    @SerializedName("orderID") val orderID: String,
+    @SerializedName("businessInfo") val businessInformation: List<BusinessInformation>,
 )
 
 class SelectAddressViewModel() : ViewModel() {
@@ -83,11 +79,11 @@ class SelectAddressViewModel() : ViewModel() {
         okHttpCLient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 Log.e(
-                    "ChooseBusinessViewModel",
+                    "SelectAddressViewModel",
                     "Failed to update selected business: ${response.code}"
                 )
                 Log.e(
-                    "ChooseBusinessViewModel",
+                    "SelectAddressViewModel",
                     "Response body: ${response.body?.string()}"
                 )
             } else {
@@ -99,7 +95,7 @@ class SelectAddressViewModel() : ViewModel() {
                 response.body?.let { responseBody ->
                     val responseJson = responseBody.string()
                     Log.i(
-                        "ChooseBusinessViewModel",
+                        "SelectAddressViewModel",
                         "Response JSON: $responseJson"
                     )
 
@@ -107,6 +103,10 @@ class SelectAddressViewModel() : ViewModel() {
                         val responseObj = Gson().fromJson(
                             responseJson,
                             responseObj::class.java
+                        )
+                        Log.i(
+                            "SelectAddressViewModel",
+                            "Response Obj: $responseObj"
                         )
                         OrderRepository.updateAvailableBusinesses(responseObj.businessInformation)
                     } catch (e: Exception) {

@@ -15,7 +15,7 @@ data class AddressInformation(
     @SerializedName("addressPrimary")
     val addressPrimary: String,
     @SerializedName("addressSecondary")
-    val addressSecondary: String? = null,
+    val addressSecondary: String? = "",
     @SerializedName("city")
     val city: String,
     @SerializedName("state")
