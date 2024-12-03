@@ -8,6 +8,7 @@
 #include <iostream>
 
 void handle_request(web::http::http_request request) {
+  std::cout << "LOG: Received request\n";
   auto path = web::uri::decode(request.relative_uri().path());
 
   if (path == U("/startOrder") &&
@@ -52,6 +53,8 @@ void handle_start_order(web::http::http_request request) {
               jsonObject[U("userID")].as_string());
           web::json::value addressInfo = jsonObject[U("addressInfo")];
 
+          std::cout << "LOG: handle_start_order recevied userID: " << userID
+                    << std::endl;
           // Insert the order into the database and retrieve the generated
           // orderID
           std::string orderID = insert_order_to_db(userID, addressInfo);
@@ -127,6 +130,13 @@ void handle_select_business(web::http::http_request request) {
           std::string businessID = utility::conversions::to_utf8string(
               jsonObject[U("businessID")].as_string());
 
+          std::cout << "LOG: handle_select_business recevied userID " << userID
+                    << std::endl;
+          std::cout << "LOG: handle_select_business received orderID "
+                    << orderID << std::endl;
+          std::cout << "LOG: handle_select_business received businessID "
+                    << businessID << std::endl;
+
           // TODO: validate orderID exists?
 
           // Fetch available items for the selected business from the database
@@ -183,6 +193,11 @@ void handle_select_shopper(web::http::http_request request) {
               jsonObject[U("userID")].as_string());
           std::string orderID = utility::conversions::to_utf8string(
               jsonObject[U("orderID")].as_string());
+
+          std::cout << "LOG: handle_select_shopper received userID: " << userID
+                    << std::endl;
+          std::cout << "LOG: handle_select_shopper received orderID: "
+                    << orderID << std::endl;
 
           // TODO: validate orderID exists?
 
@@ -244,6 +259,13 @@ void handle_shopper_confirm(web::http::http_request request) {
           std::string shopperID = utility::conversions::to_utf8string(
               jsonObject[U("shopperID")].as_string());
 
+          std::cout << "LOG: handle_shopper_confirm received userID: " << userID
+                    << std::endl;
+          std::cout << "LOG: handle_shopper_confirm recevied orderID: "
+                    << orderID << std::endl;
+          std::cout << "LOG: handle_shopper_confirm received shopperID: "
+                    << shopperID << std::endl;
+
           // TODO: validate orderID exists?
 
           // Update the order's shopper in the DB
@@ -290,6 +312,11 @@ void handle_checkout(web::http::http_request request) {
           std::string orderID = utility::conversions::to_utf8string(
               jsonObject[U("orderID")].as_string());
           web::json::value items = jsonObject[U("items")];
+
+          std::cout << "LOG: handle_checkout recevied userID: " << userID
+                    << std::endl;
+          std::cout << "LOG: handle_checkout received orderID: " << orderID
+                    << std::endl;
 
           // TODO: validate orderID exists?
 
